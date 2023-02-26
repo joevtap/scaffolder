@@ -19,10 +19,11 @@ type File struct {
 	Content string `yaml:"content,omitempty"`
 }
 
-func Scaffold(yamlFilePath, outputDirPath string, data map[string]string) error {
+func Scaffold(templatePath, outputDirPath string, data map[string]string) error {
+	log.SetPrefix("func Scaffold(string, string, map[string]string) error:")
 	var dir Dir
 
-	yamlData, err := os.ReadFile(yamlFilePath)
+	yamlData, err := os.ReadFile(templatePath)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -36,12 +37,14 @@ func Scaffold(yamlFilePath, outputDirPath string, data map[string]string) error 
 }
 
 func (d Dir) Scaffold(parentDirPath string, data map[string]string) error {
+	log.SetPrefix("func (d Dir) Scaffold(string, map[string]string) error:")
+
 	for key, subDir := range d.Dirs {
 		subDirPath := filepath.Join(parentDirPath, key)
 
 		err := os.MkdirAll(subDirPath, 0755)
 		if err != nil {
-			log.Println(err)
+			log.Fatal(err)
 		}
 
 		err = subDir.Scaffold(subDirPath, data)
@@ -59,6 +62,8 @@ func (d Dir) Scaffold(parentDirPath string, data map[string]string) error {
 }
 
 func createFiles(files []File, parentDirPath string, data map[string]string) error {
+	log.SetPrefix("func createFiles([]File, string, map[string]string) error:")
+
 	for _, file := range files {
 		err := createFile(file, parentDirPath, data)
 		if err != nil {
@@ -70,6 +75,8 @@ func createFiles(files []File, parentDirPath string, data map[string]string) err
 }
 
 func createFile(file File, parentDirPath string, data map[string]string) error {
+	log.SetPrefix("func createFile(File, string, map[string]string) error:")
+
 	filePath := filepath.Join(parentDirPath, file.Name)
 
 	err := os.MkdirAll(filepath.Dir(filePath), 0755)
@@ -90,12 +97,12 @@ func createFile(file File, parentDirPath string, data map[string]string) error {
 
 	tmpl, err := template.New(file.Name).Parse(file.Content)
 	if err != nil {
-		log.Println(err)
+		log.Fatal(err)
 	}
 
 	err = tmpl.Execute(newFile, data)
 	if err != nil {
-		log.Println(err)
+		log.Fatal(err)
 	}
 
 	return nil
