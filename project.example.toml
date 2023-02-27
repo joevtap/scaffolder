@@ -1,0 +1,61 @@
+# This is a TOML file.
+
+# Declare a file
+[[root]]
+name = 'main.go'             # Required
+type = 'file'                # Required
+template = 'tpl/main.go.tpl' # Optional
+
+# Declare a file without template
+[[root]]
+name = 'main_test.go'
+type = 'file'
+
+# If you want to use a template, you must specify the template path.
+# Template path can be relative or absolute.
+[[root]]
+name = 'README.md'
+type = 'file'
+template = '/home/username/templates/README.md.tpl'
+# Preferably, use relative paths and omit the "./" prefix.
+
+# Declare a dir
+[[root]]
+name = 'bin'
+type = 'dir'
+
+# Below the dir, you can declare files and dirs.
+# Enter a dir using .children
+[[root.children]]
+name = 'main.go'
+type = 'file'
+
+# Declare another dir
+[[root]]
+name = 'teste'
+type = 'dir'
+
+# Get into the last declared dir and declare a file
+[[root.children]]
+name = 'main.go'
+type = 'file'
+template = 'tpl/main.go.tpl'
+
+# Because children is optional, you can omit it.
+# But you have to declare a dir if you want to enter it.
+[[root.children]]
+name = 'nested'
+type = 'dir'
+
+[[root.children.children]]
+name = 'main_test.go'
+type = 'file'
+
+# If you do not declare a dir and try to enter it, nothing will happen.
+[[root.children.children.children]]
+name = 'will_not_be_created'
+type = 'dir'
+
+[[root.children.children.children]]
+name = 'will_not_be_created_either.go'
+type = 'file'
