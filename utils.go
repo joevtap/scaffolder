@@ -9,7 +9,7 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-func createDirectoryTree(block []Block, parentPath string, templateData interface{}) error {
+func createDirectoryTree(block []Block, parentPath, templateRoot string, templateData interface{}) error {
 	for _, block := range block {
 		switch block.Type {
 		case "dir":
@@ -20,12 +20,12 @@ func createDirectoryTree(block []Block, parentPath string, templateData interfac
 			}
 
 			if len(block.Children) > 0 {
-				createDirectoryTree(block.Children, dirPath, templateData)
+				createDirectoryTree(block.Children, dirPath, templateRoot, templateData)
 			}
 
 		case "file":
 			filePath := filepath.Join(parentPath, block.Name)
-			err := createFile(filePath, block, templateData)
+			err := createFile(filePath, block, templateRoot, templateData)
 			if err != nil {
 				return err
 			}
@@ -46,7 +46,7 @@ func createDir(dirPath string) error {
 	return nil
 }
 
-func createFile(filePath string, block Block, templateData interface{}) error {
+func createFile(filePath string, block Block, templateRoot string, templateData interface{}) error {
 	file, err := os.Create(filePath)
 	if err != nil {
 		return fmt.Errorf("error creating file %v: %v", filePath, err)
@@ -54,7 +54,7 @@ func createFile(filePath string, block Block, templateData interface{}) error {
 	defer file.Close()
 
 	if block.Template != "" {
-		templateFilePath := filepath.FromSlash(block.Template)
+		templateFilePath := filepath.Join(templateRoot, block.Template)
 		templateFile, err := os.ReadFile(templateFilePath)
 		if err != nil {
 			return fmt.Errorf("error reading template file %v: %v", templateFilePath, err)

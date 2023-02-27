@@ -7,7 +7,7 @@ import (
 	"github.com/pelletier/go-toml/v2"
 )
 
-func Scaffold(path, definition string, templateData interface{}) error {
+func Scaffold(path, definition, templateRoot string, templateData interface{}) error {
 	project, err := os.ReadFile(definition)
 	if err != nil {
 		return fmt.Errorf("error reading project definition file: %v", err)
@@ -33,7 +33,7 @@ func Scaffold(path, definition string, templateData interface{}) error {
 		return fmt.Errorf("error creating project directory: %v", err)
 	}
 
-	err = createDirectoryTree(p.Root, path, templateData)
+	err = createDirectoryTree(p.Root, path, templateRoot, templateData)
 	if err != nil {
 		return fmt.Errorf("error scaffolding project: %v", err)
 	}
