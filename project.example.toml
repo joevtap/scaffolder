@@ -2,9 +2,9 @@
 
 # Declare a file
 [[root]]
-name = 'main.go'             # Required
-type = 'file'                # Required
-template = 'tpl/main.go.tpl' # Optional
+name = 'main.go'         # Required
+type = 'file'            # Required
+template = 'main.go.tpl' # Optional
 
 # Declare a file without template
 [[root]]
@@ -12,12 +12,11 @@ name = 'main_test.go'
 type = 'file'
 
 # If you want to use a template, you must specify the template path.
-# Template path can be relative or absolute.
+# Template path MUST be relative to appRootPath
 [[root]]
 name = 'README.md'
 type = 'file'
-template = '/home/username/templates/README.md.tpl'
-# Preferably, use relative paths and omit the "./" prefix.
+template = 'main.go.tpl'
 
 # Declare a dir
 [[root]]
@@ -39,7 +38,7 @@ type = 'dir'
 [[root.children]]
 name = 'main.go'
 type = 'file'
-template = 'tpl/main.go.tpl'
+template = 'main.go.tpl'
 
 # Because children is optional, you can omit it.
 # But you have to declare a dir if you want to enter it.
