@@ -1,0 +1,11 @@
+[[root]]
+name = 'dir'
+type = 'dir'
+
+[[root.children]]
+name = 'dir2'
+type = 'dir'
+
+[[root.children.children]]
+name = 'dir3'
+type = 'dir'

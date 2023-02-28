@@ -1,6 +1,6 @@
 package scaffolder
 
-// Project struct represents the project definition file.
+// Project struct represents the project config file.
 type Project struct {
 	Root []Block `toml:"root" validate:"required,dive"`
 }

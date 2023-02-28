@@ -5,24 +5,21 @@ import (
 	"os"
 	"path/filepath"
 	"text/template"
-
-	"github.com/go-playground/validator/v10"
 )
 
-// createDirectoryTree creates a directory tree based on the provided definition.
+// createDirectoryTree creates a directory tree based on the provided config.
 //
 //   - projectRoot is the field in the Project struct that represents the root of the directory tree.
 //   - destinationPath is the path to the directory where the directory tree will be created.
 //     The path is relative to the current working directory.
 //   - appRootPath is the absolute path to the root of the application.
-//   - data is the template data to be used when rendering the project definition file.
+//   - data is the template data to be used when rendering the project config file.
 func createDirectoryTree(projectRoot []Block, destinationPath, appRootPath string, data interface{}) error {
 	for _, block := range projectRoot {
 		switch block.Type {
 		case "dir":
 			dirPath := filepath.Join(destinationPath, block.Name)
-			err := createDir(dirPath)
-			if err != nil {
+			if err := createDir(dirPath); err != nil {
 				return err
 			}
 
@@ -32,8 +29,7 @@ func createDirectoryTree(projectRoot []Block, destinationPath, appRootPath strin
 
 		case "file":
 			filePath := filepath.Join(destinationPath, block.Name)
-			err := createFile(filePath, block, appRootPath, data)
-			if err != nil {
+			if err := createFile(filePath, block, appRootPath, data); err != nil {
 				return err
 			}
 
@@ -59,46 +55,33 @@ func createDir(dirPath string) error {
 // createFile creates a file at the provided destinationPath.
 //
 //   - destinationPath is the path to the file to be created.
-//   - definition is the definition of the file to be created.
+//   - block is the definition of the file to be created.
 //   - appRoot is the absolute path to the root of the application.
 //   - data is the template data to be used when rendering the project definition file.
-func createFile(destinationPath string, definition Block, appRootPath string, data interface{}) error {
+func createFile(destinationPath string, block Block, appRootPath string, data interface{}) error {
 	file, err := os.Create(destinationPath)
 	if err != nil {
 		return fmt.Errorf("error creating file %v: %v", destinationPath, err)
 	}
 	defer file.Close()
 
-	if definition.Template != "" {
-		templateFilePath := filepath.Join(appRootPath, definition.Template)
+	if block.Template != "" {
+		templateFilePath := filepath.Join(appRootPath, block.Template)
+
 		templateFile, err := os.ReadFile(templateFilePath)
 		if err != nil {
 			return fmt.Errorf("error reading template file %v: %v", templateFilePath, err)
 		}
 
-		tpl, err := template.New(definition.Name).Parse(string(templateFile))
+		tpl, err := template.New(block.Name).Parse(string(templateFile))
 		if err != nil {
 			return fmt.Errorf("error parsing template file %v: %v", templateFilePath, err)
 		}
-		err = tpl.Execute(file, data)
-		if err != nil {
+
+		if err := tpl.Execute(file, data); err != nil {
 			return fmt.Errorf("error executing template file %v: %v", templateFilePath, err)
 		}
 	}
 
 	return nil
-}
-
-func validateProject(project Project) error {
-	v := validator.New()
-	return v.Struct(project)
-}
-
-func pathExists(path string) bool {
-	_, err := os.Stat(path)
-	if err != nil && os.IsNotExist(err) {
-		return false
-	}
-
-	return true
 }

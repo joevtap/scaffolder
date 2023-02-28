@@ -1,0 +1,7 @@
+[[root]]
+name = 'file.txt'
+type = 'file'
+
+[[root]]
+name = 'file2.txt'
+type = 'file'

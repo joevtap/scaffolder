@@ -1,0 +1,9 @@
+[[root]]
+name = 'file.txt'
+type = 'file'
+template = 'testdata/file.txt'
+
+[[root]]
+name = 'file2.txt'
+type = 'file'
+template = 'testdata/file.txt'

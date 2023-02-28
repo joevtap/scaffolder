@@ -1,0 +1,4 @@
+testdata/coverage.*
+testdata/c.*
+coverage.*
+c.*

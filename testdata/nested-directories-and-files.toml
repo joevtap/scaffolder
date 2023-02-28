@@ -1,0 +1,19 @@
+[[root]]
+name = 'file.txt'
+type = 'file'
+
+[[root]]
+name = 'dir'
+type = 'dir'
+
+[[root.children]]
+name = 'file2.txt'
+type = 'file'
+
+[[root.children]]
+name = 'dir2'
+type = 'dir'
+
+[[root.children.children]]
+name = 'file3.txt'
+type = 'file'
